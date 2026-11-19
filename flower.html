@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Lily Bouquet for Selvi Lena Ina Lein ❤️</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at center, #1a002c 0%, #090012 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        canvas {
+            box-shadow: 0 0 50px rgba(255, 105, 180, 0.4);
+            border-radius: 18px;
+            background-color: #090012;
+            max-width: 100%;
+            max-height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="bouquetCanvas" width="1000" height="720"></canvas>
+
+    <script>
+        const canvas = document.getElementById('bouquetCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let startTime = null;
+        const animDuration = 5000;
+
+        // Bintang latar belakang bersinar
+        const stars = [];
+        for (let i = 0; i < 90; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 2 + 0.5,
+                alpha: Math.random(),
+                speed: Math.random() * 0.02 + 0.005
+            });
+        }
+
+        function drawBackground() {
+            ctx.fillStyle = "#090012";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            stars.forEach(s => {
+                s.alpha += s.speed;
+                if (s.alpha > 1 || s.alpha < 0.2) s.speed = -s.speed;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(s.alpha)})`;
+                ctx.fill();
+            });
+        }
+
+        function drawKoreanWrapping(progress) {
+            let p = Math.min(1, progress * 1.5);
+            if (p <= 0) return;
+
+            ctx.save();
+            // Posisi buket dinaikkan sedikit ke y: 425 biar muat saat bunganya digedein
+            ctx.translate(500, 425);
+            ctx.scale(p * 1.08, p * 1.08); // Kertas pembungkus ikut digedein 8% biar proporsional
+
+            // 1. Lapisan Kertas Pembungkus Luar
+            ctx.beginPath();
+            ctx.moveTo(0, -60);
+            ctx.lineTo(-270, -250);
+            ctx.lineTo(-300, -110);
+            ctx.lineTo(-110, 90);
+            ctx.closePath();
+            let wrapGrad1 = ctx.createLinearGradient(-270, -250, 0, 90);
+            wrapGrad1.addColorStop(0, "#f7d6e6");
+            wrapGrad1.addColorStop(1, "#d16ba5");
+            ctx.fillStyle = wrapGrad1;
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#ffb3d9";
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(0, -60);
+            ctx.lineTo(270, -250);
+            ctx.lineTo(300, -110);
+            ctx.lineTo(110, 90);
+            ctx.closePath();
+            let wrapGrad2 = ctx.createLinearGradient(0, -250, 270, 90);
+            wrapGrad2.addColorStop(0, "#f7d6e6");
+            wrapGrad2.addColorStop(1, "#d16ba5");
+            ctx.fillStyle = wrapGrad2;
+            ctx.fill();
+            ctx.stroke();
+
+            // 2. Lapisan Kertas Dalam Putih
+            ctx.beginPath();
+            ctx.moveTo(-140, -120);
+            ctx.quadraticCurveTo(0, -60, 140, -120);
+            ctx.lineTo(160, 100);
+            ctx.lineTo(-160, 100);
+            ctx.closePath();
+            ctx.fillStyle = "#ffffff";
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "#f0f0f0";
+            ctx.stroke();
+
+            // 3. Pita Satin Besar & Menjuntai
+            ctx.beginPath();
+            ctx.arc(0, -35, 20, 0, Math.PI * 2);
+            ctx.fillStyle = "#ff1a8c";
+            ctx.fill();
+            ctx.strokeStyle = "#99004d";
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+
+            // Sayap Pita Kiri
+            ctx.beginPath();
+            ctx.ellipse(-50, -48, 40, 16, Math.PI / 5, 0, Math.PI * 2);
+            ctx.fillStyle = "#ff4da6";
+            ctx.fill();
+            ctx.stroke();
+
+            // Sayap Pita Kanan
+            ctx.beginPath();
+            ctx.ellipse(50, -48, 40, 16, -Math.PI / 5, 0, Math.PI * 2);
+            ctx.fillStyle = "#ff4da6";
+            ctx.fill();
+            ctx.stroke();
+
+            // Ekor Pita Menjuntai
+            ctx.beginPath();
+            ctx.moveTo(-12, -20);
+            ctx.quadraticCurveTo(-55, 35, -45, 80);
+            ctx.lineTo(-18, 70);
+            ctx.fillStyle = "#ff1a8c";
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(12, -20);
+            ctx.quadraticCurveTo(55, 35, 45, 80);
+            ctx.lineTo(18, 70);
+            ctx.fillStyle = "#ff1a8c";
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function drawStems() {
+            const stems = [{
+                toX: 400,
+                toY: 195
+            }, {
+                toX: 600,
+                toY: 185
+            }, {
+                toX: 335,
+                toY: 260
+            }, {
+                toX: 665,
+                toY: 250
+            }, {
+                toX: 500,
+                toY: 300
+            }, {
+                toX: 425,
+                toY: 225
+            }, {
+                toX: 575,
+                toY: 215
+            }, {
+                toX: 500,
+                toY: 195
+            }];
+
+            ctx.save();
+            stems.forEach(st => {
+                ctx.beginPath();
+                ctx.moveTo(500, 385);
+                ctx.quadraticCurveTo(500 + (st.toX - 500) * 0.4, 315, st.toX, st.toY);
+                ctx.strokeStyle = "#2e7a4b";
+                ctx.lineWidth = 4.5;
+                ctx.stroke();
+            });
+            ctx.restore();
+        }
+
+        function drawSingleLily(scale, rotSway) {
+            ctx.save();
+            ctx.rotate(rotSway);
+            ctx.scale(scale, scale);
+
+            for (let j = 0; j < 6; j++) {
+                ctx.save();
+                ctx.rotate((j * Math.PI) / 3);
+
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(28, -45, 38, -98, 0, -132);
+                ctx.bezierCurveTo(-38, -98, -28, -45, 0, 0);
+                ctx.closePath();
+
+                let grad = ctx.createLinearGradient(0, 0, 0, -132);
+                grad.addColorStop(0, "#ffffff");
+                grad.addColorStop(0.3, "#ffffff");
+                grad.addColorStop(0.7, "#ff66b2");
+                grad.addColorStop(1, "#800040");
+
+                ctx.fillStyle = grad;
+                ctx.fill();
+                ctx.lineWidth = 1.2;
+                ctx.strokeStyle = "#59002d";
+                ctx.stroke();
+
+                // Bintik marun
+                ctx.fillStyle = "#33001a";
+                ctx.beginPath();
+                ctx.arc(0, -38, 2.2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(-5.5, -52, 1.7, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(5.5, -56, 1.7, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+
+            // Benang sari
+            for (let k = 0; k < 5; k++) {
+                ctx.save();
+                ctx.rotate(k * 0.5 - 1.0);
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(0, -70);
+                ctx.strokeStyle = "#fff68f";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.ellipse(0, -70, 2.8, 7.5, 0, 0, Math.PI * 2);
+                ctx.fillStyle = "#b34700";
+                ctx.fill();
+                ctx.restore();
+            }
+            ctx.restore();
+        }
+
+        function drawRoseOrCarnation(f, scale) {
+            ctx.save();
+            ctx.translate(f.x, f.y);
+            ctx.scale(scale, scale);
+            ctx.beginPath();
+            ctx.arc(0, 0, f.r, 0, Math.PI * 2);
+            ctx.fillStyle = f.c;
+            ctx.fill();
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = "#d1829d";
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(-2.5, -2.5, f.r * 0.55, 0, Math.PI * 2);
+            ctx.strokeStyle = f.innerC;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function animate(timestamp) {
+            if (!startTime) startTime = timestamp;
+            let elapsed = timestamp - startTime;
+            let progress = Math.min(1, elapsed / animDuration);
+
+            drawBackground();
+
+            if (progress > 0.05) {
+                drawStems();
+            }
+
+            drawKoreanWrapping(progress);
+
+            let bloomProgress = Math.max(0, (progress - 0.2) / 0.8);
+            let currentScale = Math.sin(bloomProgress * Math.PI / 2);
+            let sway = progress >= 1 ? Math.sin(timestamp / 500) * 0.02 : 0;
+
+            if (progress > 0.1) {
+                ctx.save();
+                for (let i = 0; i < 30; i++) {
+                    let rx = 340 + Math.sin(i * 10) * 165;
+                    let ry = 105 + (i * 6);
+                    ctx.beginPath();
+                    ctx.arc(rx, ry, (i % 3 + 2.5) * bloomProgress, 0, Math.PI * 2);
+                    ctx.fillStyle = i % 2 === 0 ? "#c9e2b3" : "#9bc781";
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+
+            // Ukuran bunga mawar & anyelir digedein
+            const mixFlowers = [{
+                x: 500,
+                y: 185,
+                r: 25,
+                c: "#fff0f5",
+                innerC: "#ffb6c1"
+            }, {
+                x: 425,
+                y: 225,
+                r: 23,
+                c: "#ffc0cb",
+                innerC: "#ff80bf"
+            }, {
+                x: 575,
+                y: 215,
+                r: 24,
+                c: "#ffffff",
+                innerC: "#e0e0e0"
+            }, {
+                x: 460,
+                y: 260,
+                r: 23,
+                c: "#ffd1dc",
+                innerC: "#ff99cc"
+            }, {
+                x: 540,
+                y: 250,
+                r: 24,
+                c: "#ffb6c1",
+                innerC: "#ff4da6"
+            }, {
+                x: 370,
+                y: 185,
+                r: 22,
+                c: "#ffffff",
+                innerC: "#f0f0f0"
+            }, {
+                x: 630,
+                y: 175,
+                r: 22,
+                c: "#ffccd5",
+                innerC: "#ff99a8"
+            }];
+            mixFlowers.forEach(f => {
+                if (bloomProgress > 0) drawRoseOrCarnation(f, currentScale);
+            });
+
+            // Skala bunga Stargazer Lily digedein biar lebih megah dan rimbun
+            const lilies = [{
+                x: 400,
+                y: 195,
+                baseScale: 1.12,
+                rot: -0.4 + sway
+            }, {
+                x: 600,
+                y: 185,
+                baseScale: 1.12,
+                rot: 0.4 + sway
+            }, {
+                x: 335,
+                y: 260,
+                baseScale: 1.0,
+                rot: -0.7 + sway
+            }, {
+                x: 665,
+                y: 250,
+                baseScale: 1.0,
+                rot: 0.6 + sway
+            }, {
+                x: 500,
+                y: 300,
+                baseScale: 1.18,
+                rot: 0.1 + sway
+            }];
+
+            lilies.forEach(l => {
+                if (bloomProgress > 0) {
+                    ctx.save();
+                    ctx.translate(l.x, l.y);
+                    drawSingleLily(currentScale * l.baseScale, l.rot);
+                    ctx.restore();
+                }
+            });
+
+            // Teks Nama Pas di Bawah Pita & Aman di Dalam Canvas
+            if (progress >= 1) {
+                ctx.save();
+                ctx.textAlign = "center";
+                ctx.shadowColor = "#ff1a8c";
+                ctx.shadowBlur = 18;
+
+                // Baris 1
+                ctx.font = "italic 22px 'Brush Script MT', 'Lucida Handwriting', 'Segoe Script', cursive";
+                ctx.fillStyle = "#ffb3d9";
+                ctx.fillText("Special Luxury Bouquet for My Love ❤️", 500, 635);
+
+                // Baris 2 (Nama Spesial Pacar)
+                ctx.font = "bold 24px 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+                ctx.fillStyle = "#ffffff";
+                ctx.fillText("Selvi Lena Ina Lein 🫶🏼✨", 500, 672);
+
+                ctx.shadowBlur = 0;
+                ctx.restore();
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        requestAnimationFrame(animate);
+    </script>
+</body>
+
+</html>
